@@ -6,6 +6,11 @@
 
 KrushiAI is an intelligent fertilizer recommendation system powered by machine learning that helps farmers make data-driven decisions about fertilizer selection. By analyzing soil conditions, environmental factors, and crop requirements, our AI model provides personalized fertilizer recommendations to optimize crop yield and reduce agricultural costs.
 
+## 🚀 Live Demo
+
+You can access the live application here:
+[🌾 KrushiAI - Smart Fertilizer Recommendation System](https://krushiai-fertilizer-recommendation-system.streamlit.app/)
+
 ## ✨ Features
 
 ### 🤖 AI-Powered Recommendations
