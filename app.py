@@ -7,7 +7,7 @@ import os
 app = Flask(__name__)
 CORS(app)  # allow all origins; tighten in production if needed
 
-# Load model components at startup
+# Model components (lazy-loaded to avoid boot-time crashes/timeouts)
 MODEL_PATH = os.getenv("MODEL_PATH", ".")
 
 model = None
@@ -15,6 +15,7 @@ soil_encoder = None
 crop_encoder = None
 fertilizer_encoder = None
 scaler = None
+_last_load_error = None
 
 
 def load_pickle(name):
@@ -23,22 +24,28 @@ def load_pickle(name):
         return pickle.load(f)
 
 
-def load_components():
-    global model, soil_encoder, crop_encoder, fertilizer_encoder, scaler
-    model = load_pickle("Fertilizer_RF.pkl")
-    soil_encoder = load_pickle("soil_encoder.pkl")
-    crop_encoder = load_pickle("crop_encoder.pkl")
-    fertilizer_encoder = load_pickle("fertilizer_encoder.pkl")
-    # scaler is optional
+def ensure_loaded():
+    global model, soil_encoder, crop_encoder, fertilizer_encoder, scaler, _last_load_error
+    if model is not None and soil_encoder is not None and crop_encoder is not None and fertilizer_encoder is not None:
+        return True
     try:
+        model = load_pickle("Fertilizer_RF.pkl")
+        soil_encoder = load_pickle("soil_encoder.pkl")
+        crop_encoder = load_pickle("crop_encoder.pkl")
+        fertilizer_encoder = load_pickle("fertilizer_encoder.pkl")
+        scaler = None
         scaler_path = os.path.join(MODEL_PATH, "feature_scaler.pkl")
         if os.path.exists(scaler_path):
-            scaler = load_pickle("feature_scaler.pkl")
-    except Exception:
-        scaler = None
-
-
-load_components()
+            try:
+                scaler = load_pickle("feature_scaler.pkl")
+            except Exception:
+                scaler = None
+        _last_load_error = None
+        return True
+    except Exception as e:
+        _last_load_error = str(e)
+        # Do not raise; keep service alive
+        return False
 
 
 FERTILIZER_INFO = {
@@ -96,18 +103,20 @@ FERTILIZER_INFO = {
 
 @app.get("/health")
 def health():
-    return jsonify({"status": "ok"})
+    loaded = ensure_loaded()
+    return jsonify({"status": "ok", "model_loaded": loaded, "last_error": _last_load_error})
 
 
 @app.get("/")
 def root():
-    return jsonify({"service": "fertilizer-recommendation", "status": "ready"})
+    loaded = ensure_loaded()
+    return jsonify({"service": "fertilizer-recommendation", "status": "ready", "model_loaded": loaded})
 
 
 @app.get("/api/classes")
 def get_classes():
-    if soil_encoder is None or crop_encoder is None:
-        return jsonify({"error": "encoders_not_loaded"}), 500
+    if not ensure_loaded():
+        return jsonify({"error": "model_not_loaded", "message": _last_load_error}), 503
     return jsonify({
         "soil_types": list(getattr(soil_encoder, "classes_", [])),
         "crop_types": list(getattr(crop_encoder, "classes_", [])),
@@ -152,6 +161,8 @@ def validate(payload):
 
 @app.post("/api/predict")
 def predict():
+    if not ensure_loaded():
+        return jsonify({"error": "model_not_loaded", "message": _last_load_error}), 503
     try:
         data = request.get_json(force=True)
     except Exception:

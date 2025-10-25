@@ -1,5 +1,5 @@
 // Set this to your deployed Render URL, e.g. "https://fertilizer-api.onrender.com"
-const API_BASE_URL = window.API_BASE_URL || "http://localhost:5000";
+const API_BASE_URL = "https://fertilizer-api-kkay.onrender.com";
 
 const soilSelect = document.getElementById("soil_type");
 const cropSelect = document.getElementById("crop_type");
