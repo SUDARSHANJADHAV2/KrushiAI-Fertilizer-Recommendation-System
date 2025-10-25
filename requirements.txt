@@ -1,8 +1,6 @@
-streamlit
+Flask
+flask-cors
 pandas
 numpy
 scikit-learn
-Pillow
-plotly
-seaborn
-matplotlib
+gunicorn
