@@ -1,58 +1,96 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Fertilizer Recommendation</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KrushiAI - Fertilizer Recommendation</title>
+  <!-- Global site styles -->
+  <link rel="stylesheet" href="../../css/style.css">
+  <!-- Page-specific styles -->
+  <link rel="stylesheet" href="styles.css">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-  <main class="container">
-    <h1>Fertilizer Recommendation</h1>
-    <p class="subtitle">AI-powered suggestion based on soil, crop and conditions</p>
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <h1>KrushiAI</h1>
+    </div>
 
-    <form id="predict-form">
-      <section class="grid">
-        <label>
-          Temperature (°C)
-          <input type="number" step="0.1" id="temperature" value="26" min="0" max="60" required />
-        </label>
-        <label>
-          Humidity (%)
-          <input type="number" step="1" id="humidity" value="52" min="0" max="100" required />
-        </label>
-        <label>
-          Soil Moisture (%)
-          <input type="number" step="1" id="moisture" value="38" min="0" max="100" required />
-        </label>
-        <label>
-          Soil Type
-          <select id="soil_type"></select>
-        </label>
-        <label>
-          Crop Type
-          <select id="crop_type"></select>
-        </label>
-        <label>
-          Nitrogen (mg/kg)
-          <input type="number" step="1" id="nitrogen" value="37" min="0" max="300" required />
-        </label>
-        <label>
-          Potassium (mg/kg)
-          <input type="number" step="1" id="potassium" value="0" min="0" max="300" required />
-        </label>
-        <label>
-          Phosphorous (mg/kg)
-          <input type="number" step="1" id="phosphorous" value="0" min="0" max="300" required />
-        </label>
-      </section>
-      <button type="submit" id="submit">Get Recommendation</button>
-    </form>
+    <nav class="navbar">
+      <a href="https://aifarmerassistant-krushiai.netlify.app/">Home</a>
+      <a href="https://aifarmerassistant-krushiai.netlify.app/">Features</a>
+      <a href="https://aifarmerassistant-krushiai.netlify.app/">About</a>
+      <a href="https://aifarmerassistant-krushiai.netlify.app/">Contact</a>
+      <a href="https://aifarmerassistant-krushiai.netlify.app/krushiai-weather-forecast/">Weather</a>
+      <a href="https://aifarmerassistant-krushiai.netlify.app/guide/">Guide</a>
+      <a href="https://aifarmerassistant-krushiai.netlify.app/explore/">EXPLORE NOW</a>
+    </nav>
 
-    <section id="result" class="card hidden"></section>
-    <section id="errors" class="errors hidden"></section>
+    <div class="fas fa-bars" id="menu-btn"></div>
+  </header>
+
+  <!-- Page content -->
+  <main class="fertilizer-page">
+    <div class="container">
+      <h1>KrushiAI: Smart Fertilizer Recommendation</h1>
+      <p class="subtitle">AI-powered suggestion based on soil, crop and conditions</p>
+
+      <form id="predict-form">
+        <div class="form-columns">
+          <div class="form-column">
+            <h2>Environment</h2>
+            <label for="temperature">Temperature (°C)</label>
+            <input type="number" step="0.1" id="temperature" value="26" min="0" max="60" required />
+
+            <label for="humidity">Humidity (%)</label>
+            <input type="number" step="1" id="humidity" value="52" min="0" max="100" required />
+
+            <label for="moisture">Soil Moisture (%)</label>
+            <input type="number" step="1" id="moisture" value="38" min="0" max="100" required />
+          </div>
+
+          <div class="form-column">
+            <h2>Soil & Crop</h2>
+            <label for="soil_type">Soil Type</label>
+            <select id="soil_type"></select>
+
+            <label for="crop_type">Crop Type</label>
+            <select id="crop_type"></select>
+
+            <label for="nitrogen">Nitrogen (mg/kg)</label>
+            <input type="number" step="1" id="nitrogen" value="37" min="0" max="300" required />
+
+            <label for="potassium">Potassium (mg/kg)</label>
+            <input type="number" step="1" id="potassium" value="0" min="0" max="300" required />
+
+            <label for="phosphorous">Phosphorous (mg/kg)</label>
+            <input type="number" step="1" id="phosphorous" value="0" min="0" max="300" required />
+          </div>
+        </div>
+
+        <button type="submit" id="submit">Get Recommendation</button>
+      </form>
+
+      <div id="results-container" class="results-container">
+        <h2>Recommendation</h2>
+        <section id="result" class="prediction-result hidden"></section>
+        <section id="errors" class="errors hidden"></section>
+      </div>
+    </div>
   </main>
 
+  <!-- Footer -->
+  <section class="footer" id="footer">
+    <div class="credit">
+      © Copyright 2025 – All Rights Reserved
+      <a href="#" target="_blank"><span>Team KrushiAI</span></a>
+    </div>
+  </section>
+
+  <!-- Scripts -->
+  <script src="../../js/main.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
