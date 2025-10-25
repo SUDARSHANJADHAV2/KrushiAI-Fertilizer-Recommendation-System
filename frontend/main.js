@@ -1,5 +1,6 @@
-// Set this to your deployed Render URL, e.g. "https://fertilizer-api.onrender.com"
-const API_BASE_URL = "https://fertilizer-api-kkay.onrender.com";
+// Auto-select API: localhost in dev, Render in production; override by setting window.API_BASE_URL
+const DEFAULT_API = "https://fertilizer-api-kkay.onrender.com";
+const API_BASE_URL = window.API_BASE_URL || (location.hostname === "localhost" ? "http://localhost:5000" : DEFAULT_API);
 
 const soilSelect = document.getElementById("soil_type");
 const cropSelect = document.getElementById("crop_type");
