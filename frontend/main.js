@@ -1,6 +1,8 @@
 // Auto-select API: localhost in dev, Render in production; override by setting window.API_BASE_URL
 const DEFAULT_API = "https://fertilizer-api-kkay.onrender.com";
-const API_BASE_URL = window.API_BASE_URL || (location.hostname === "localhost" ? "http://localhost:5000" : DEFAULT_API);
+// Check if running from file:// protocol or localhost
+const isLocal = location.protocol === "file:" || location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.hostname === "";
+const API_BASE_URL = window.API_BASE_URL || (isLocal ? "http://localhost:5001" : DEFAULT_API);
 
 const soilSelect = document.getElementById("soil_type");
 const cropSelect = document.getElementById("crop_type");
