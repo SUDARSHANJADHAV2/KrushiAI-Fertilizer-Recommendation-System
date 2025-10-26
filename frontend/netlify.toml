@@ -1,0 +1,14 @@
+# Netlify config: proxy API requests to your deployed Flask API on Render
+# Replace with your actual backend URL from Render
+
+[[redirects]]
+from = "/api/*"
+to = "https://fertilizer-api-kkay.onrender.com/api/:splat"
+status = 200
+force = true
+
+[[redirects]]
+from = "/health"
+to = "https://fertilizer-api-kkay.onrender.com/health"
+status = 200
+force = true

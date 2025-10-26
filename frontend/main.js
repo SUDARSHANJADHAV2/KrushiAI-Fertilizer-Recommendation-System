@@ -1,8 +1,17 @@
-// Auto-select API: localhost in dev, Render in production; override by setting window.API_BASE_URL
-const DEFAULT_API = "https://fertilizer-api-kkay.onrender.com";
-// Check if running from file:// protocol or localhost
-const isLocal = location.protocol === "file:" || location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.hostname === "";
-const API_BASE_URL = window.API_BASE_URL || (isLocal ? "http://localhost:5001" : DEFAULT_API);
+// Auto-select API: localhost in dev, relative paths in production (proxied via netlify.toml)
+// Check if running from file:// protocol or localhost (including Live Server ports like 5500-5599)
+const isLocal = location.protocol === "file:" || 
+                location.hostname === "localhost" || 
+                location.hostname === "127.0.0.1" || 
+                location.hostname === "" ||
+                (location.hostname === "127.0.0.1" && location.port >= "5500" && location.port <= "5599");
+// In production (Netlify), use relative paths (proxied via netlify.toml)
+// In local dev, point to local backend
+const API_BASE_URL = window.API_BASE_URL || (isLocal ? "http://127.0.0.1:5001" : "");
+
+console.log('[Fertilizer] Page URL:', location.href);
+console.log('[Fertilizer] Detected as local:', isLocal);
+console.log('[Fertilizer] API Base URL:', API_BASE_URL);
 
 const soilSelect = document.getElementById("soil_type");
 const cropSelect = document.getElementById("crop_type");
@@ -11,13 +20,20 @@ const errorsEl = document.getElementById("errors");
 
 async function fetchClasses() {
   try {
+    console.log('[Fertilizer] Fetching classes from:', `${API_BASE_URL}/api/classes`);
     const res = await fetch(`${API_BASE_URL}/api/classes`);
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    }
     const data = await res.json();
+    console.log('[Fertilizer] Received classes:', data);
     soilSelect.innerHTML = data.soil_types.map(v => `<option>${v}</option>`).join("");
     cropSelect.innerHTML = data.crop_types.map(v => `<option>${v}</option>`).join("");
+    console.log('[Fertilizer] Dropdowns populated successfully');
   } catch (e) {
+    console.error('[Fertilizer] Failed to load classes:', e);
     errorsEl.classList.remove("hidden");
-    errorsEl.textContent = "Failed to load classes from backend.";
+    errorsEl.textContent = `Failed to load classes: ${e.message}. Make sure backend is running on port 5001.`;
   }
 }
 
